@@ -1,0 +1,35 @@
+(function ($) {
+  Drupal.behaviors.heftig_cookie = {
+    attach: function () {
+      var delete_cookies = true;
+      var cookie_whitelist = ["cookie_consent", "has_js"];
+
+
+      // Show cookie compliance message if the cookie is not set.
+      if (document.cookie.indexOf('cookie_consent=') == -1) {
+        $('#cookie').show();
+      } else if ($.cookie('cookie_consent') == 'all') {
+        delete_cookies = false;
+      } else if ($.cookie('cookie_consent') == 'necessary') {
+        //
+      }
+
+      if (delete_cookies) {
+        var cookies = document.cookie.split(";");
+
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i];
+          var eqPos = cookie.indexOf("=");
+          var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+
+          var name_check = $.trim(name);
+
+          if ($.inArray(name_check, cookie_whitelist) < 0) {
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+          }
+        }
+      }
+    }
+  }
+}(jQuery));
+;
